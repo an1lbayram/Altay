@@ -61,7 +61,10 @@ export async function fetchPOIs({ lat, lng, radius, category = 'all' }) {
           'User-Agent': 'AltayApp/1.0 (https://an1lbayram-github-io.vercel.app/)'
         },
         body: `data=${encodeURIComponent(query)}`,
-        signal: activeAbortController.signal
+        // Combine the shared cancellation controller (used to abort stale requests when the
+        // user changes location/category) with a per-endpoint 15s timeout so a slow/unresponsive
+        // Overpass mirror doesn't hang the request indefinitely.
+        signal: AbortSignal.any([activeAbortController.signal, AbortSignal.timeout(15000)])
       });
 
       if (!response.ok) {

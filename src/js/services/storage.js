@@ -2,12 +2,16 @@
  * LocalStorage Service Manager
  */
 
+// NOTE: keys renamed from the old "historiamap_" prefix to "altay_" to match the project name.
+// This intentionally invalidates any previously stored favorites/theme/search-history for existing
+// users (localStorage keys are exact-match), but the project name has settled on "Altay" so the
+// naming is corrected here.
 const KEYS = {
-  FAVORITES: 'historiamap_favorites',
-  THEME_MODE: 'historiamap_theme_mode',
-  MAP_TILE: 'historiamap_map_tile',
-  LAST_LOCATION: 'historiamap_last_loc',
-  SEARCH_HISTORY: 'historiamap_search_history'
+  FAVORITES: 'altay_favorites',
+  THEME_MODE: 'altay_theme_mode',
+  MAP_TILE: 'altay_map_tile',
+  LAST_LOCATION: 'altay_last_loc',
+  SEARCH_HISTORY: 'altay_search_history'
 };
 
 export const Storage = {

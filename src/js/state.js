@@ -9,14 +9,10 @@ export const state = {
   category: 'all', // 'all', 'historic', 'museum', 'castle', 'ancient', 'religion', 'monument'
   searchQuery: '',
   pois: [],
-  filteredPois: [],
-  selectedPoi: null,
   favorites: [],
   mapTheme: 'streets', // 'streets', 'satellite', 'dark'
   themeMode: 'dark', // 'light' or 'dark'
   isLoading: false,
-  sidebarOpen: false,
-  mobileTab: 'map', // 'map', 'list', 'favorites'
   listeners: new Set(),
 
   /**

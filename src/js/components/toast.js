@@ -1,6 +1,7 @@
 /**
  * Toast Notification Component
  */
+import { escapeHtml } from '../utils/helpers.js';
 
 let toastContainer = null;
 
@@ -23,10 +24,13 @@ export function showToast(message, type = 'info', duration = 3500) {
   toast.innerHTML = `
     <i class="fa-solid ${iconClass} text-lg flex-shrink-0"></i>
     <span class="flex-1">${escapeHtml(message)}</span>
-    <button class="text-xs opacity-60 hover:opacity-100 transition-opacity ml-2" onclick="this.parentElement.remove()">
+    <button class="toast-close-btn text-xs opacity-60 hover:opacity-100 transition-opacity ml-2">
       <i class="fa-solid fa-xmark"></i>
     </button>
   `;
+
+  // Attach close handler in JS instead of inline onclick (keeps CSP script-src free of 'unsafe-inline')
+  toast.querySelector('.toast-close-btn')?.addEventListener('click', () => toast.remove());
 
   toastContainer.appendChild(toast);
 
@@ -66,12 +70,4 @@ function getToastIcon(type) {
     case 'info':
     default: return 'fa-circle-info text-teal-400';
   }
-}
-
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
 }

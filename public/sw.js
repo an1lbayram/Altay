@@ -1,4 +1,7 @@
-const CACHE_NAME = 'historiamap-v1.0';
+// NOTE: cache name renamed from "historiamap-*" to "altay-*" to match the project name.
+// The activate handler below already deletes any cache whose name doesn't match CACHE_NAME,
+// so old "historiamap-*" caches will be cleaned up automatically on next activation.
+const CACHE_NAME = 'altay-v1.0';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

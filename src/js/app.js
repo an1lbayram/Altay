@@ -6,7 +6,7 @@ import { showToast } from './components/toast.js';
 import { renderSidebar } from './components/sidebar.js';
 import { Storage } from './services/storage.js';
 import { initLoader } from './components/loader.js';
-import { debounce, CATEGORIES } from './utils/helpers.js';
+import { debounce, CATEGORIES, escapeHtml } from './utils/helpers.js';
 
 // DOM Cache
 const dom = {};
@@ -51,6 +51,8 @@ function cacheDOM() {
   dom.sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
   dom.sidebar = document.getElementById('sidebar');
   dom.pwaInstallBtn = document.getElementById('pwaInstallBtn');
+  dom.logoReloadBtn = document.getElementById('logoReloadBtn');
+  dom.titleReloadBtn = document.getElementById('titleReloadBtn');
 }
 
 function applyInitialTheme() {
@@ -74,6 +76,11 @@ function registerServiceWorker() {
 }
 
 function bindEvents() {
+  // Logo / Title click: reload app (moved from inline onclick to keep CSP script-src free of 'unsafe-inline')
+  const reloadHandler = () => window.location.reload();
+  dom.logoReloadBtn?.addEventListener('click', reloadHandler);
+  dom.titleReloadBtn?.addEventListener('click', reloadHandler);
+
   // Search Autocomplete & Action
   const handleAutocomplete = debounce(async (query) => {
     if (!query || query.trim().length < 2) {
@@ -89,9 +96,9 @@ function bindEvents() {
       }
 
       dom.searchSuggestions.innerHTML = results.map(item => `
-        <button data-lat="${item.lat}" data-lng="${item.lng}" data-name="${item.shortName}" data-city="${item.cityName}" class="suggestion-item w-full text-left px-4 py-2.5 hover:bg-teal-50 dark:hover:bg-slate-800 flex items-center gap-3 transition-colors border-b border-slate-100 dark:border-slate-800 last:border-none text-xs font-medium">
+        <button data-lat="${item.lat}" data-lng="${item.lng}" data-name="${escapeHtml(item.shortName)}" data-city="${escapeHtml(item.cityName)}" class="suggestion-item w-full text-left px-4 py-2.5 hover:bg-teal-50 dark:hover:bg-slate-800 flex items-center gap-3 transition-colors border-b border-slate-100 dark:border-slate-800 last:border-none text-xs font-medium">
           <i class="fa-solid fa-location-dot text-teal-600 dark:text-teal-400"></i>
-          <span class="truncate text-slate-800 dark:text-slate-200">${item.name}</span>
+          <span class="truncate text-slate-800 dark:text-slate-200">${escapeHtml(item.name)}</span>
         </button>
       `).join('');
 
