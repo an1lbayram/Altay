@@ -1,0 +1,38 @@
+{
+  "name": "altay",
+  "version": "1.0.0",
+  "description": "Altay - Interaktif Tarih ve Kültürel Miras Harita Uygulaması",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "altay",
+    "history",
+    "map",
+    "leaflet",
+    "overpass-api",
+    "pwa",
+    "audio-guide",
+    "vite",
+    "tailwind"
+  ],
+  "author": "an1lbayram",
+  "license": "MIT",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.3.1",
+    "leaflet": "^1.9.4",
+    "leaflet.markercluster": "^1.5.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "autoprefixer": "^10.5.4",
+    "postcss": "^8.5.25",
+    "tailwindcss": "^4.3.3",
+    "terser": "^5.46.0",
+    "vite": "^8.1.5"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "Altay - Tarihi & Kültürel Miras Haritası",
+  "short_name": "Altay",
+  "description": "Çevrenizdeki ve tüm dünyadaki tarihi eserleri, antik kentleri, müzeleri ve kültürel mirasları interaktif harita ile keşfedin.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d9488",
+  "theme_color": "#0d9488",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["travel", "education", "navigation", "lifestyle"]
+}

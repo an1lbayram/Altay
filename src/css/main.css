@@ -1,0 +1,152 @@
+@import "tailwindcss";
+@import 'leaflet/dist/leaflet.css';
+@import 'leaflet.markercluster/dist/MarkerCluster.css';
+@import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
+@layer base {
+  :root {
+    --header-height: 72px;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+.dark ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+::-webkit-scrollbar-thumb {
+  background: #0d9488;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0f766e;
+}
+
+/* Map height layout */
+#map {
+  height: calc(100vh - var(--header-height));
+  width: 100%;
+}
+
+/* User Location Marker Animation */
+.user-marker-pin {
+  width: 22px;
+  height: 22px;
+  background-color: #3b82f6;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+  position: relative;
+}
+
+.user-marker-pulse {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(59, 130, 246, 0.4);
+  animation: user-pulse 2s infinite;
+}
+
+@keyframes user-pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* Custom Leaflet MarkerCluster Styling */
+.marker-cluster-small {
+  background-color: rgba(13, 148, 136, 0.4) !important;
+}
+.marker-cluster-small div {
+  background-color: rgba(15, 118, 110, 0.9) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.marker-cluster-medium {
+  background-color: rgba(245, 158, 11, 0.4) !important;
+}
+.marker-cluster-medium div {
+  background-color: rgba(217, 119, 6, 0.9) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.marker-cluster-large {
+  background-color: rgba(225, 29, 72, 0.4) !important;
+}
+.marker-cluster-large div {
+  background-color: rgba(190, 18, 60, 0.9) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.marker-cluster div {
+  width: 36px !important;
+  height: 36px !important;
+  margin-left: 4px !important;
+  margin-top: 4px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 13px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border: 2px solid white;
+}
+
+/* Leaflet Popup Styling */
+.leaflet-popup-content-wrapper {
+  padding: 0 !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+}
+.dark .leaflet-popup-content-wrapper {
+  background: rgba(15, 23, 42, 0.95) !important;
+  color: #f3f4f6 !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  line-height: 1.5 !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+.dark .leaflet-popup-tip {
+  background: rgba(15, 23, 42, 0.95) !important;
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
