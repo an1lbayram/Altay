@@ -24,7 +24,7 @@ export function showToast(message, type = 'info', duration = 3500) {
   toast.innerHTML = `
     <i class="fa-solid ${iconClass} text-lg flex-shrink-0"></i>
     <span class="flex-1">${escapeHtml(message)}</span>
-    <button class="toast-close-btn text-xs opacity-60 hover:opacity-100 transition-opacity ml-2">
+    <button class="toast-close-btn text-xs opacity-60 hover:opacity-100 transition-opacity ml-2" aria-label="Bildirimi kapat">
       <i class="fa-solid fa-xmark"></i>
     </button>
   `;

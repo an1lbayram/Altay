@@ -95,6 +95,6 @@ export const Storage = {
     if (history.length > 10) history = history.slice(0, 10);
     try {
       localStorage.setItem(KEYS.SEARCH_HISTORY, JSON.stringify(history));
-    } catch (e) {}
+    } catch {}
   }
 };

@@ -24,7 +24,7 @@ export function initModal() {
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/30 to-transparent"></div>
         
         <!-- Close Button -->
-        <button id="modal-close-btn" class="absolute top-4 right-4 bg-slate-900/60 hover:bg-slate-900 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-lg">
+        <button id="modal-close-btn" class="absolute top-4 right-4 bg-slate-900/60 hover:bg-slate-900 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-lg" aria-label="Kapat">
           <i class="fa-solid fa-xmark"></i>
         </button>
 
@@ -105,7 +105,7 @@ export function initModal() {
           <i class="fa-solid fa-diamond-turn-right"></i> Yol Tarifi
         </a>
 
-        <button id="modal-share-btn" class="w-10 h-10 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl flex items-center justify-center transition-all">
+        <button id="modal-share-btn" class="w-10 h-10 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl flex items-center justify-center transition-all" aria-label="Paylaş">
           <i class="fa-solid fa-share-nodes"></i>
         </button>
       </div>
@@ -182,7 +182,7 @@ export async function openPoiModal(poi) {
     if (navigator.share) {
       try {
         await navigator.share(shareData);
-      } catch (err) {}
+      } catch {}
     } else {
       navigator.clipboard.writeText(`${poi.name} (${poi.lat}, ${poi.lng})`);
       showToast('Konum bilgisi panoya kopyalandı.', 'success');

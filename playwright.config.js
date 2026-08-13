@@ -18,7 +18,7 @@ export default defineConfig({
   // (registration fires on the window "load" event, so its exact timing varies with CPU
   // contention across concurrently-running browser projects) — one retry absorbs that.
   retries: process.env.CI ? 2 : 1,
-  reporter: 'list',
+  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
   use: {
     baseURL: BASE_URL,
     trace: 'retain-on-failure',

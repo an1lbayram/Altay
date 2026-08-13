@@ -22,7 +22,7 @@ export async function fetchPOIs({ lat, lng, radius, category = 'all' }) {
   const radiusMeters = Math.min(radius, 50) * 1000;
   
   // Construct targeted Overpass QL Query focusing on true history & heritage
-  let filterStr = '';
+  let filterStr;
   switch (category) {
     case 'museum':
       filterStr = `nwr["tourism"="museum"](around:${radiusMeters},${lat},${lng});`;

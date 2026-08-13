@@ -58,4 +58,12 @@ export async function mockExternalServices(page, { pois } = {}) {
     /tile\.openstreetmap\.org|tile\.opentopomap\.org|arcgisonline\.com|basemaps\.cartocdn\.com/,
     (route) => route.fulfill({ status: 200, contentType: 'image/png', body: TRANSPARENT_PNG })
   );
+
+  // POI detail modal enrichment sources (Wikidata, Wikipedia, Wikimedia Commons, weather,
+  // elevation). Each caller already falls back gracefully on failure (see dataFusion.js),
+  // so aborting is enough to keep the modal fast and deterministic in tests.
+  await page.route(
+    /wikidata\.org|wikipedia\.org|commons\.wikimedia\.org|api\.open-meteo\.com|api\.open-elevation\.com/,
+    (route) => route.abort()
+  );
 }

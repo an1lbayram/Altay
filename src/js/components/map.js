@@ -89,6 +89,9 @@ export function updateUserMarker(lat, lng) {
     userMarker = L.marker(latlng, { icon: userLocationIcon })
       .addTo(map)
       .bindPopup('<div class="p-2 text-center text-xs font-bold text-teal-700 dark:text-teal-400"><i class="fa-solid fa-crosshairs me-1"></i> Konumunuz</div>');
+    // Leaflet's divIcon markers get role="button" but only set a JS `.alt` property
+    // (meaningless on a <div>, invisible to screen readers) — set a real aria-label instead.
+    userMarker.getElement()?.setAttribute('aria-label', 'Mevcut konumunuz');
   }
 }
 
@@ -108,6 +111,12 @@ export function renderPoiMarkers(pois) {
   pois.forEach(poi => {
     const markerIcon = createCustomMarkerIcon(poi);
     const marker = L.marker([poi.lat, poi.lng], { icon: markerIcon });
+
+    // Same divIcon aria-label fix as the user marker; bound before adding to the cluster
+    // group since clustered markers only get a DOM element once individually rendered.
+    marker.on('add', () => {
+      marker.getElement()?.setAttribute('aria-label', poi.name);
+    });
 
     const googleMapsDirUrl = `https://www.google.com/maps/dir/?api=1&destination=${poi.lat},${poi.lng}`;
     const distanceText = formatDistance(poi.distance);

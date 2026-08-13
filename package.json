@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "playwright test",
-    "test:ui": "playwright test --ui"
+    "test:ui": "playwright test --ui",
+    "lint": "eslint ."
   },
   "keywords": [
     "altay",
@@ -29,10 +30,14 @@
     "leaflet.markercluster": "^1.5.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.49.0",
     "@tailwindcss/postcss": "^4.0.0",
     "@tailwindcss/vite": "^4.0.0",
     "autoprefixer": "^10.5.4",
+    "eslint": "^10.8.1",
+    "globals": "^17.11.0",
     "postcss": "^8.5.25",
     "tailwindcss": "^4.3.3",
     "vite": "^8.1.5"
