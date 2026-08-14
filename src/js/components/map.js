@@ -15,21 +15,35 @@ let userMarker = null;
 const TILE_CONFIGS = {
   streets: {
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    subdomains: 'abc',
+    maxZoom: 19
   },
   satellite: {
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+    subdomains: '',
+    maxZoom: 19
   },
   dark: {
     url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
   },
   topo: {
     url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, SRTM | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
+    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, SRTM | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a>',
+    subdomains: 'abc',
+    maxZoom: 17
   }
 };
+
+export function resizeMap() {
+  if (map) {
+    map.invalidateSize();
+  }
+}
 
 export function initMap(containerId = 'map') {
   map = L.map(containerId, {
@@ -39,15 +53,26 @@ export function initMap(containerId = 'map') {
 
   // Initialize tile layers
   Object.keys(TILE_CONFIGS).forEach(key => {
-    tileLayers[key] = L.tileLayer(TILE_CONFIGS[key].url, {
-      attribution: TILE_CONFIGS[key].attribution,
-      maxZoom: 19
+    const config = TILE_CONFIGS[key];
+    tileLayers[key] = L.tileLayer(config.url, {
+      attribution: config.attribution,
+      maxZoom: config.maxZoom || 19,
+      subdomains: config.subdomains || 'abc',
+      crossOrigin: true
     });
   });
 
   const activeTileKey = Storage.getMapTile() || 'streets';
   currentTileLayer = tileLayers[activeTileKey] || tileLayers.streets;
   currentTileLayer.addTo(map);
+
+  // Force Leaflet container size recalculation after DOM layout settles
+  requestAnimationFrame(() => {
+    if (map) map.invalidateSize();
+  });
+  setTimeout(() => {
+    if (map) map.invalidateSize();
+  }, 300);
 
   // Initialize Marker Cluster Group with custom options
   markerClusterGroup = L.markerClusterGroup({

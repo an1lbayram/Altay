@@ -1,5 +1,5 @@
 import { state } from './state.js';
-import { initMap, updateUserMarker, centerMap, renderPoiMarkers, switchMapTile } from './components/map.js';
+import { initMap, updateUserMarker, centerMap, renderPoiMarkers, switchMapTile, resizeMap } from './components/map.js';
 import { fetchPOIs } from './services/overpass.js';
 import { searchLocation, getRegionFromCoords } from './services/nominatim.js';
 import { showToast } from './components/toast.js';
@@ -201,6 +201,12 @@ function bindEvents() {
   // Sidebar Toggle (Mobile Drawer)
   dom.sidebarToggleBtn.addEventListener('click', () => {
     dom.sidebar.classList.toggle('translate-x-full');
+  });
+
+  // Handle map resizing on window resize / mobile orientation change
+  window.addEventListener('resize', debounce(() => resizeMap(), 150));
+  window.addEventListener('orientationchange', () => {
+    setTimeout(resizeMap, 250);
   });
 
   // PWA Deferred Prompt Handler

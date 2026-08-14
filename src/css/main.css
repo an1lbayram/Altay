@@ -37,8 +37,14 @@
 
 /* Map height layout */
 #map {
-  height: calc(100vh - var(--header-height));
   width: 100%;
+  height: 100%;
+}
+
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  outline: none;
 }
 
 /* User Location Marker Animation */
