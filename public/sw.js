@@ -1,7 +1,7 @@
 // NOTE: cache name renamed from "historiamap-*" to "altay-*" to match the project name.
 // The activate handler below already deletes any cache whose name doesn't match CACHE_NAME,
 // so old "historiamap-*" caches will be cleaned up automatically on next activation.
-const CACHE_NAME = 'altay-v1.0';
+const CACHE_NAME = 'altay-v1.2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -36,8 +36,18 @@ self.addEventListener('activate', (event) => {
 // Fetch event: Network first, fallback to cache
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
-  if (event.request.url.includes('overpass-api.de') || event.request.url.includes('nominatim.openstreetmap.org') || event.request.url.includes('wikipedia.org')) {
-    // API calls: Network only (do not cache dynamically shifting API queries)
+  const url = event.request.url;
+
+  // Bypass SW for tile layers & external API calls
+  if (
+    url.includes('tile.openstreetmap.org') ||
+    url.includes('arcgisonline.com') ||
+    url.includes('cartocdn.com') ||
+    url.includes('opentopomap.org') ||
+    url.includes('overpass-api.de') ||
+    url.includes('nominatim.openstreetmap.org') ||
+    url.includes('wikipedia.org')
+  ) {
     return;
   }
 

@@ -26,7 +26,7 @@ const TILE_CONFIGS = {
     maxZoom: 19
   },
   dark: {
-    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains: 'abcd',
     maxZoom: 19
@@ -54,12 +54,14 @@ export function initMap(containerId = 'map') {
   // Initialize tile layers
   Object.keys(TILE_CONFIGS).forEach(key => {
     const config = TILE_CONFIGS[key];
-    tileLayers[key] = L.tileLayer(config.url, {
+    const opts = {
       attribution: config.attribution,
-      maxZoom: config.maxZoom || 19,
-      subdomains: config.subdomains || 'abc',
-      crossOrigin: true
-    });
+      maxZoom: config.maxZoom || 19
+    };
+    if (config.subdomains) {
+      opts.subdomains = config.subdomains;
+    }
+    tileLayers[key] = L.tileLayer(config.url, opts);
   });
 
   const activeTileKey = Storage.getMapTile() || 'streets';
