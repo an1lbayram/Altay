@@ -30,9 +30,9 @@ export default [
       globals: { ...globals.serviceworker },
     },
   },
-  // Node-side config files.
+  // Node-side config files and scripts.
   {
-    files: ['*.config.js', 'vite.config.js', 'playwright.config.js', 'eslint.config.js'],
+    files: ['*.config.js', 'vite.config.js', 'playwright.config.js', 'playwright.api.config.js', 'eslint.config.mjs', 'scripts/**/*.mjs'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',

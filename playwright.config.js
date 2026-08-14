@@ -12,6 +12,14 @@ const BASE_URL = `http://localhost:${PORT}`;
 // project's preview server) would test the wrong app instead of failing loudly.
 export default defineConfig({
   testDir: './tests',
+  // Playwright's default testMatch also picks up *.test.js, which is reserved for Vitest
+  // unit/component specs (tests/unit/**, tests/component/**) — restrict to *.spec.js so
+  // the two runners don't fight over the same files.
+  testMatch: '**/*.spec.js',
+  // api-contract.spec.js hits real, rate-limited public APIs (Overpass, Nominatim,
+  // Wikipedia) on purpose — excluded from the default run, invoked explicitly via
+  // `npm run test:api` instead of every `npm test`/CI push.
+  testIgnore: '**/api-contract.spec.js',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   // Service worker activation timing is inherently a bit racy under heavy parallel load
@@ -41,6 +49,10 @@ export default defineConfig({
     {
       name: 'Mobile Safari (iOS)',
       use: { ...devices['iPhone 13'] },
+    },
+    {
+      name: 'Desktop Firefox (PC)',
+      use: { ...devices['Desktop Firefox'] },
     },
   ],
 });

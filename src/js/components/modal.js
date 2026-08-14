@@ -149,6 +149,7 @@ export async function openPoiModal(poi) {
   categoryBadge.textContent = poi.category || 'Tarihi Konum';
   distanceText.textContent = formatDistance(poi.distance);
   imageEl.src = 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?q=80&w=600&auto=format&fit=crop';
+  imageEl.alt = poi.name;
   descEl.innerHTML = '<div class="flex items-center gap-2 text-slate-500"><i class="fa-solid fa-spinner animate-spin"></i> Özgür API ağlarından veriler çekiliyor...</div>';
 
   mapsLink.href = `https://www.google.com/maps/dir/?api=1&destination=${poi.lat},${poi.lng}`;

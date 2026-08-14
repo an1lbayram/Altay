@@ -9,6 +9,10 @@
     "preview": "vite preview",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
+    "test:lighthouse": "node scripts/lighthouse.mjs",
+    "test:api": "playwright test --config=playwright.api.config.js",
     "lint": "eslint ."
   },
   "keywords": [
@@ -36,10 +40,14 @@
     "@tailwindcss/postcss": "^4.0.0",
     "@tailwindcss/vite": "^4.0.0",
     "autoprefixer": "^10.5.4",
+    "chrome-launcher": "^1.2.1",
     "eslint": "^10.8.1",
     "globals": "^17.11.0",
+    "jsdom": "^30.0.1",
+    "lighthouse": "^13.4.1",
     "postcss": "^8.5.25",
     "tailwindcss": "^4.3.3",
-    "vite": "^8.1.5"
+    "vite": "^8.1.5",
+    "vitest": "^4.1.10"
   }
 }

@@ -72,6 +72,13 @@ test.describe('PWA installability', () => {
 
   test('app shell keeps working while fully offline once installed/cached', async ({ page, context, browserName }) => {
     test.skip(browserName === 'webkit', 'Service worker lifecycle is not reliably observable under Playwright WebKit.');
+    // Firefox's context.setOffline() blocks requests at the network stack before they ever
+    // reach the service worker's fetch handler (NS_ERROR_OFFLINE), unlike Chromium where
+    // offline emulation still lets an active SW serve from Cache Storage. Documented
+    // Playwright/Firefox difference, not an app bug — Chromium (the majority real-world
+    // installed-PWA engine, and what iOS Safari's own SW implementation is closer to
+    // behaviorally) already covers this.
+    test.skip(browserName === 'firefox', 'Firefox blocks requests before the service worker can serve them offline; not testable via context.setOffline().');
 
     // First visit lets the service worker install and activate.
     await page.goto('/');

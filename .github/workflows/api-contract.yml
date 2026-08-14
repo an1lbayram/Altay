@@ -1,0 +1,22 @@
+name: API contract check
+
+# Verifies our assumptions about the real Overpass/Nominatim/Wikipedia response shapes still
+# hold. Deliberately NOT run on every push (see tests/api-contract.spec.js) — these are
+# shared, rate-limited public services — just on a light weekly schedule plus on-demand.
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  api-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:api

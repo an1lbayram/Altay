@@ -90,7 +90,10 @@ export const Storage = {
   addSearchHistory(term) {
     if (!term || !term.trim()) return;
     let history = this.getSearchHistory();
-    history = history.filter(item => item.toLowerCase() !== term.toLowerCase());
+    // Plain toLowerCase() maps "İ" to "i" + a combining dot (U+0307), not ASCII "i", so
+    // "İstanbul" and "istanbul" would never dedupe against each other. Turkish-locale
+    // casing folds dotted/dotless I correctly.
+    history = history.filter(item => item.toLocaleLowerCase('tr') !== term.toLocaleLowerCase('tr'));
     history.unshift(term.trim());
     if (history.length > 10) history = history.slice(0, 10);
     try {

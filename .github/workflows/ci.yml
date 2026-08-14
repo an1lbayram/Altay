@@ -20,8 +20,8 @@ jobs:
       - run: npm run lint
       - run: npm audit --audit-level=high
 
-  e2e:
-    name: Playwright (PWA + functional + a11y)
+  unit-tests:
+    name: Unit & component tests (Vitest)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,11 +30,52 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium webkit
+      - run: npm run test:unit
+
+  e2e:
+    name: Playwright (PWA + functional + a11y + SEO + visual)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium webkit firefox
       - run: npm test
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
           path: playwright-report/
+          retention-days: 14
+
+  lighthouse:
+    name: Lighthouse (performance/a11y/best-practices/SEO)
+    runs-on: ubuntu-latest
+    # Informational, not a merge gate: Lighthouse scores (esp. performance) are inherently
+    # environment-sensitive (shared-runner CPU throttling varies run to run), and the
+    # best-practices floor already has a thin margin locally. Still runs and reports on
+    # every push/PR so regressions are visible, just doesn't block on noise.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      # chrome-launcher (used by the Lighthouse script) needs a real system Chrome binary —
+      # Playwright's bundled Chromium lives at a different path it won't auto-detect.
+      - uses: browser-actions/setup-chrome@v1
+        id: setup-chrome
+      - run: npm run test:lighthouse
+        env:
+          CHROME_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-report
+          path: lighthouse-report/
           retention-days: 14
