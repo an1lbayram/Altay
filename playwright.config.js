@@ -26,7 +26,11 @@ export default defineConfig({
   // (registration fires on the window "load" event, so its exact timing varies with CPU
   // contention across concurrently-running browser projects) — one retry absorbs that.
   retries: process.env.CI ? 2 : 1,
-  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
+  // 'github' reporter: CI'da her basarisiz test icin dosya/satir bazli
+  // annotation uretiyor. Bu olmadan is sadece "Process completed with exit
+  // code 1" birakiyor ve hangi testin neden dustugu ancak artifact
+  // indirilerek anlasilabiliyor.
+  reporter: process.env.CI ? [['list'], ['github'], ['html', { open: 'never' }]] : 'list',
   use: {
     baseURL: BASE_URL,
     trace: 'retain-on-failure',
