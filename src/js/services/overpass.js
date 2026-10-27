@@ -1,10 +1,12 @@
 import { calculateDistance, getPoiCategory } from '../utils/helpers.js';
 
-const OVERPASS_ENDPOINTS = [
+// Exported so tests/api-contract.spec.js checks the very same mirror list the app falls back through.
+export const OVERPASS_ENDPOINTS = [
   'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
   'https://overpass-api.de/api/interpreter',
-  'https://overpass.kumi.systems/api/interpreter',
-  'https://overpass.nchc.org.tw/api/interpreter'
+  // Formerly overpass.kumi.systems (same operator, renamed). overpass.nchc.org.tw was dropped:
+  // its DNS no longer resolves and it is gone from the OSM wiki's public-instance list.
+  'https://overpass.private.coffee/api/interpreter'
 ];
 
 let activeAbortController = null;

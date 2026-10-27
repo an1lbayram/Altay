@@ -35,7 +35,7 @@ export async function mockExternalServices(page, { pois } = {}) {
     })
   );
 
-  // Matches every Overpass mirror app.js tries (overpass-api.de, kumi.systems, mail.ru, nchc.org.tw).
+  // Matches every Overpass mirror app.js tries (mail.ru, overpass-api.de, private.coffee).
   await page.route(/\/api\/interpreter$/, (route) =>
     route.fulfill({
       status: 200,
