@@ -158,11 +158,11 @@ export function renderPoiMarkers(pois) {
             <i class="fa-solid fa-location-arrow text-[10px]"></i> ${distanceText}
           </span>
         </div>
-        <h4 class="font-bold text-sm text-slate-900 dark:text-white leading-tight mb-2">
+        <h2 class="font-bold text-sm text-slate-900 dark:text-white leading-tight mb-2">
           ${escapeHtml(poi.name)}
-        </h4>
+        </h2>
         <div class="flex items-center gap-2 mt-3 pt-2 border-t border-slate-200 dark:border-slate-800">
-          <button id="popup-btn-${poi.id}" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold py-1.5 px-3 rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+          <button id="popup-btn-${poi.id}" class="flex-1 bg-teal-700 hover:bg-teal-800 text-white text-xs font-semibold py-1.5 px-3 rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-sm">
             <i class="fa-solid fa-circle-info"></i> Detaylar
           </button>
           <a href="${googleMapsDirUrl}" target="_blank" rel="noopener noreferrer" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 p-2 rounded-lg transition-colors text-xs flex items-center justify-center" title="Yol Tarifi">

@@ -28,9 +28,9 @@ export function initLoader() {
 
       <!-- Loading Texts -->
       <div class="space-y-1.5">
-        <h3 id="loader-title" class="text-base font-extrabold text-slate-900 dark:text-white tracking-tight">
+        <h2 id="loader-title" class="text-base font-extrabold text-slate-900 dark:text-white tracking-tight">
           Tarihi Eserler Taranıyor...
-        </h3>
+        </h2>
         <p id="loader-subtitle" class="text-xs text-slate-500 dark:text-slate-400 font-medium">
           Overpass & Kültür Mirası Ağı taranıyor
         </p>

@@ -58,7 +58,7 @@ function renderTabBody() {
           <div class="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto mb-3 text-2xl">
             <i class="fa-regular fa-bookmark"></i>
           </div>
-          <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1">Henüz Favori Eklenmedi</h4>
+          <h2 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1">Henüz Favori Eklenmedi</h2>
           <p class="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">Tarihi mekanların detay kartındaki kaydet butonuna basarak favorilerinize ekleyebilirsiniz.</p>
         </div>
       `;
@@ -82,7 +82,7 @@ function renderTabBody() {
         <div class="w-16 h-16 rounded-full bg-teal-100 dark:bg-teal-950/50 text-teal-600 dark:text-teal-400 flex items-center justify-center mx-auto mb-3 text-2xl">
           <i class="fa-solid fa-map-location-dot"></i>
         </div>
-        <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1">Tarihi Yer Bulunamadı</h4>
+        <h2 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1">Tarihi Yer Bulunamadı</h2>
         <p class="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">Seçilen tarama yarıçapı veya kategoride kayıtlı yer bulunamadı. Yarıçapı artırmayı deneyin.</p>
       </div>
     `;
@@ -109,9 +109,9 @@ function renderPoiCardHtml(poi, isFavoriteItem = false) {
           ${poi.distance !== undefined ? `<span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1"><i class="fa-solid fa-location-arrow text-[9px]"></i> ${formatDistance(poi.distance)}</span>` : ''}
         </div>
 
-        <h4 class="font-bold text-xs text-slate-900 dark:text-slate-100 truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+        <h2 class="font-bold text-xs text-slate-900 dark:text-slate-100 truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
           ${escapeHtml(poi.name)}
-        </h4>
+        </h2>
 
         <div class="flex items-center justify-between gap-2 mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-700/50">
           <button data-action="center" data-id="${poi.id}" class="text-[11px] font-semibold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1">

@@ -64,7 +64,7 @@ export function initModal() {
               <i class="fa-solid fa-volume-high text-lg"></i>
             </div>
             <div>
-              <h4 class="text-xs font-bold text-teal-900 dark:text-teal-200">Sesli Rehber</h4>
+              <h3 class="text-xs font-bold text-teal-900 dark:text-teal-200">Sesli Rehber</h3>
               <p class="text-[11px] text-teal-700 dark:text-teal-400">Türkçe sesli anlatım</p>
             </div>
           </div>
@@ -80,17 +80,17 @@ export function initModal() {
 
         <!-- Historical Specs Grid ("Tarihi Künye") -->
         <div id="modal-specs-container" class="hidden pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
-          <h4 class="text-xs font-extrabold uppercase tracking-wider text-teal-700 dark:text-teal-400 flex items-center gap-1.5">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-teal-700 dark:text-teal-400 flex items-center gap-1.5">
             <i class="fa-solid fa-scroll"></i> Tarihi Künye
-          </h4>
+          </h3>
           <div id="modal-specs-grid" class="grid grid-cols-2 gap-2 text-xs"></div>
         </div>
 
         <!-- Nearby Historical Heritage Carousel -->
         <div id="modal-nearby-container" class="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
-          <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
             <i class="fa-solid fa-compass"></i> Yakındaki Diğer Eserler
-          </h4>
+          </h3>
           <div id="modal-nearby-list" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
         </div>
       </div>

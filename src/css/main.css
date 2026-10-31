@@ -156,3 +156,8 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Erisilebilirlik: atif baglantilari cevredeki metinden yalnizca renkle ayriliyordu. */
+.leaflet-control-attribution a {
+  text-decoration: underline;
+}

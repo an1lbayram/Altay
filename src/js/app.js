@@ -231,8 +231,8 @@ function renderCategoryPills() {
   if (!dom.categoryContainer) return;
 
   dom.categoryContainer.innerHTML = Object.values(CATEGORIES).map(cat => `
-    <button data-category="${cat.id}" class="category-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${state.category === cat.id ? 'bg-teal-600 text-white shadow-md scale-105' : 'bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700'}">
-      <i class="fa-solid ${cat.icon}"></i>
+    <button data-category="${cat.id}" aria-pressed="${state.category === cat.id}" class="category-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${state.category === cat.id ? 'bg-teal-700 text-white shadow-md scale-105' : 'bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700'}">
+      <i class="fa-solid ${cat.icon}" aria-hidden="true"></i>
       <span>${cat.name}</span>
     </button>
   `).join('');

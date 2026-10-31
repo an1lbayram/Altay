@@ -34,7 +34,7 @@ test.describe('Core app functionality', () => {
     await expect(page.getByText(/tarihi yer bulundu/)).toBeVisible({ timeout: 10000 });
     const museumPill = page.locator('[data-category="museum"]');
     await museumPill.click();
-    await expect(museumPill).toHaveClass(/bg-teal-600/);
+    await expect(museumPill).toHaveAttribute('aria-pressed', 'true');
   });
 
   test('radius slider updates the label and reloads POIs on change', async ({ page }) => {
