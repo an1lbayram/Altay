@@ -79,12 +79,19 @@ const STATIC_FIXTURE = {
   '/data/poi/core/73_58.json': [['n', 1, 36.62, 29.12, { historic: 'tomb', name: 'Amyntas Kaya Mezarları' }]],
 };
 
+// Call only after a load has finished: the full-screen loader blocks clicks while it is up.
 async function openSidebarOnMobile(page) {
+  await expect(page.locator('#altay-global-loader')).toHaveClass(/pointer-events-none/, { timeout: 15000 });
   const toggle = page.locator('#sidebarToggleBtn');
   if (await toggle.isVisible()) await toggle.click();
 }
 
 test.describe('POI data sources', () => {
+  // Once the PWA service worker controls the page, WebKit sends every request through it and
+  // Playwright's page.route() no longer sees them (retries would hit the real servers). These
+  // tests are about data sources, not the PWA (tests/pwa-installability.spec.js covers that).
+  test.use({ serviceWorkers: 'block' });
+
   test.beforeEach(async ({ context }) => {
     await context.grantPermissions(['geolocation']);
   });
@@ -98,31 +105,37 @@ test.describe('POI data sources', () => {
     });
 
     await page.goto('/');
-    await expect(page.getByText('1 adet tarihi yer bulundu.')).toBeVisible({ timeout: 10000 });
+    // The list counter, not the toast: a toast can come and go before it is checked.
+    await expect(page.locator('#pois-count')).toHaveText('1', { timeout: 10000 });
     await openSidebarOnMobile(page);
-    await expect(page.getByText('Amyntas Kaya Mezarları')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Amyntas Kaya Mezarları' })).toBeVisible();
     expect(overpassCalls).toEqual([]);
   });
 
-  test('when no source answers the list says so and offers a retry', async ({ page, context }) => {
-    await context.setGeolocation({ latitude: 48.8566, longitude: 2.3522 }); // outside the prebuilt data
-    await mockExternalServices(page, { staticData: STATIC_FIXTURE });
+  test('when no source answers the list says so, and Tekrar Dene really fetches again', async ({ page, context }) => {
+    await context.setGeolocation(FETHIYE);
+    await mockExternalServices(page);
+    // At first both sources are down: the prebuilt data is missing and every Overpass mirror
+    // fails. The retry is then served by the prebuilt data, which also proves a failed index load
+    // is not cached.
+    let dataUp = false;
+    await page.route(/\/data\/poi\//, (route) => {
+      const body = dataUp ? STATIC_FIXTURE[new URL(route.request().url()).pathname] : undefined;
+      return body
+        ? route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) })
+        : route.fulfill({ status: 404, body: '' });
+    });
     await page.route(/\/api\/interpreter$/, (route) => route.fulfill({ status: 504, body: '' }));
 
     await page.goto('/');
+    await expect(page.getByRole('heading', { name: 'Veriler Yüklenemedi' })).toBeAttached({ timeout: 15000 });
     await openSidebarOnMobile(page);
-    await expect(page.getByRole('heading', { name: 'Veriler Yüklenemedi' })).toBeVisible({ timeout: 15000 });
+    await expect(page.getByRole('heading', { name: 'Veriler Yüklenemedi' })).toBeVisible();
     await expect(page.getByText('Tarihi Yer Bulunamadı')).toHaveCount(0);
 
-    await page.unroute(/\/api\/interpreter$/);
-    await page.route(/\/api\/interpreter$/, (route) =>
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ elements: [{ type: 'node', id: 7, lat: 48.857, lon: 2.352, tags: { historic: 'monument', name: 'Paris Test Anıtı' } }] }),
-      })
-    );
+    dataUp = true;
     await page.getByRole('button', { name: 'Tekrar Dene' }).click();
-    await expect(page.getByText('Paris Test Anıtı')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Amyntas Kaya Mezarları' })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Veriler Yüklenemedi' })).toHaveCount(0);
   });
 });
