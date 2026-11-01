@@ -72,7 +72,8 @@
 
 | API | Kullanım |
 |-----|----------|
-| [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API) | OpenStreetMap'ten tarihi POI verileri |
+| [OpenStreetMap](https://www.openstreetmap.org/) ([Geofabrik Türkiye özeti](https://download.geofabrik.de/europe/turkey.html)) | Türkiye'deki tarihi yerler — haftalık hazırlanıp siteye gömülü (`public/data/poi`) |
+| [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API) | Türkiye dışındaki aramalar için canlı POI verisi |
 | [Nominatim](https://nominatim.org/) | Geocoding, reverse geocoding, arama |
 | [Wikipedia REST API](https://www.mediawiki.org/wiki/API:REST_API) | Makale özetleri ve görseller |
 | [Wikidata Entity API](https://www.wikidata.org/wiki/Wikidata:Data_access) | Yapılandırılmış tarihi bilgiler |
@@ -125,7 +126,9 @@ Altay/
         │   └── loader.js   # Yükleme animasyonu
         │
         ├── services/
-        │   ├── overpass.js     # Overpass API (4 yedek endpoint)
+        │   ├── overpass.js     # POI arama: Türkiye'de hazır veri, dışında Overpass (3 yedek endpoint)
+        │   ├── poiStatic.js    # public/data/poi hücrelerini okuyan istemci
+        │   ├── poiCategories.js # Kategori filtreleri (Overpass sorgusu + istemci eşleşmesi)
         │   ├── nominatim.js    # Geocoding & reverse geocoding
         │   ├── wikipedia.js    # Wikipedia REST (bölge/koordinat doğrulama)
         │   ├── wikidata.js     # Wikidata entity detayları
@@ -143,8 +146,10 @@ Altay/
 ```mermaid
 flowchart LR
     A[Kullanıcı Konumu / Arama] --> B[Nominatim Geocoding]
-    B --> C[Overpass API]
-    C --> D[POI Listesi & Harita Markerları]
+    B --> C{Türkiye içinde mi?}
+    C -- Evet --> C1[Hazır OSM verisi /data/poi]
+    C -- Hayır --> C2[Overpass API]
+    C1 & C2 --> D[POI Listesi & Harita Markerları]
     D --> E[Detay Modal Tıklama]
     E --> F[Data Fusion Engine]
     F --> G[Wikidata]
@@ -229,12 +234,29 @@ Altay, Progressive Web App olarak tasarlanmıştır:
 
 ---
 
+## 🗂️ Türkiye Tarihi Yer Verisi
+
+Herkese açık Overpass sunucuları 2026'dan beri IP başına günlük kota uyguluyor ve sık sık yanıt vermiyor; bu yüzden Türkiye içindeki aramalar canlı Overpass yerine siteyle birlikte yayınlanan hazır veriden yapılır.
+
+- **Kaynak:** Geofabrik'in günlük Türkiye OpenStreetMap özeti (© OpenStreetMap katkıcıları, ODbL)
+- **Üretim:** `scripts/build_poi_data.py` (pyosmium) — `historic=*`, `tourism=museum|attraction`, `amenity=place_of_worship` öğelerini seçer, merkezlerini Overpass'ın `out center` çıktısıyla aynı şekilde hesaplar ve 0,5°'lik hücrelere böler (`core/` ve yalnızca *İbadethane* kategorisinde yüklenen `worship/`)
+- **Güncelleme:** `.github/workflows/update-poi-data.yml` her pazar çalışır (elle de tetiklenebilir); veri değiştiyse `main`'e commit atar
+- **Yerelde üretmek için:**
+
+```bash
+pip install osmium
+curl -LO https://download.geofabrik.de/europe/turkey-latest.osm.pbf
+python3 scripts/build_poi_data.py turkey-latest.osm.pbf public/data/poi
+```
+
+---
+
 ## 🔒 Güvenlik
 
 - **XSS Koruması** — Tüm kullanıcı ve API verileri `escapeHtml()` ile sanitize edilir
 - **API Cache** — Wikipedia ve Wikidata yanıtları bellek içi cache ile optimize edilir
 - **AbortController** — Hızlı arama/kategori değişimlerinde önceki Overpass istekleri iptal edilir
-- **Overpass Failover** — 4 farklı endpoint ile yedekli API erişimi
+- **Overpass Failover** — Türkiye dışı aramalarda 3 farklı endpoint ile yedekli API erişimi; hiçbiri yanıt vermezse liste "Veriler Yüklenemedi" ve **Tekrar Dene** gösterir
 
 ---
 

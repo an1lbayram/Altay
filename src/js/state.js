@@ -13,6 +13,7 @@ export const state = {
   mapTheme: 'streets', // 'streets', 'satellite', 'dark'
   themeMode: 'dark', // 'light' or 'dark'
   isLoading: false,
+  loadError: '', // shown in the list instead of "nothing found" when loading failed
   listeners: new Set(),
 
   /**

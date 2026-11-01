@@ -46,7 +46,10 @@ self.addEventListener('fetch', (event) => {
     url.includes('opentopomap.org') ||
     url.includes('overpass-api.de') ||
     url.includes('nominatim.openstreetmap.org') ||
-    url.includes('wikipedia.org')
+    url.includes('wikipedia.org') ||
+    // Prebuilt Turkey POI data: left to the normal HTTP cache (ETag revalidation picks up the
+    // weekly refresh) and kept out of this cache so it can't grow with every visited region.
+    url.includes('/data/poi/')
   ) {
     return;
   }

@@ -70,3 +70,59 @@ test.describe('Core app functionality', () => {
     await expect(sidebar).toHaveClass(/translate-x-full/);
   });
 });
+
+// Inside Turkey the app reads prebuilt OpenStreetMap data from /data/poi instead of the public
+// Overpass servers (which rate-limit per IP and are often silent); outside it falls back to Overpass.
+const FETHIYE = { latitude: 36.6214, longitude: 29.1164 };
+const STATIC_FIXTURE = {
+  '/data/poi/index.json': { version: 1, cellSize: 0.5, layers: ['core', 'worship'], cells: { '73_58': [1, 0] } },
+  '/data/poi/core/73_58.json': [['n', 1, 36.62, 29.12, { historic: 'tomb', name: 'Amyntas Kaya Mezarları' }]],
+};
+
+async function openSidebarOnMobile(page) {
+  const toggle = page.locator('#sidebarToggleBtn');
+  if (await toggle.isVisible()) await toggle.click();
+}
+
+test.describe('POI data sources', () => {
+  test.beforeEach(async ({ context }) => {
+    await context.grantPermissions(['geolocation']);
+  });
+
+  test('a location in Turkey is served from the prebuilt data without calling Overpass', async ({ page, context }) => {
+    await context.setGeolocation(FETHIYE);
+    await mockExternalServices(page, { staticData: STATIC_FIXTURE });
+    const overpassCalls = [];
+    page.on('request', (req) => {
+      if (/\/api\/interpreter$/.test(req.url())) overpassCalls.push(req.url());
+    });
+
+    await page.goto('/');
+    await expect(page.getByText('1 adet tarihi yer bulundu.')).toBeVisible({ timeout: 10000 });
+    await openSidebarOnMobile(page);
+    await expect(page.getByText('Amyntas Kaya Mezarları')).toBeVisible();
+    expect(overpassCalls).toEqual([]);
+  });
+
+  test('when no source answers the list says so and offers a retry', async ({ page, context }) => {
+    await context.setGeolocation({ latitude: 48.8566, longitude: 2.3522 }); // outside the prebuilt data
+    await mockExternalServices(page, { staticData: STATIC_FIXTURE });
+    await page.route(/\/api\/interpreter$/, (route) => route.fulfill({ status: 504, body: '' }));
+
+    await page.goto('/');
+    await openSidebarOnMobile(page);
+    await expect(page.getByRole('heading', { name: 'Veriler Yüklenemedi' })).toBeVisible({ timeout: 15000 });
+    await expect(page.getByText('Tarihi Yer Bulunamadı')).toHaveCount(0);
+
+    await page.unroute(/\/api\/interpreter$/);
+    await page.route(/\/api\/interpreter$/, (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ elements: [{ type: 'node', id: 7, lat: 48.857, lon: 2.352, tags: { historic: 'monument', name: 'Paris Test Anıtı' } }] }),
+      })
+    );
+    await page.getByRole('button', { name: 'Tekrar Dene' }).click();
+    await expect(page.getByText('Paris Test Anıtı')).toBeVisible({ timeout: 10000 });
+  });
+});

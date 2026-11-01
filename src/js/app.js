@@ -32,9 +32,14 @@ async function initApp() {
 
   // Subscribe to state updates
   state.subscribe((key, value) => {
-    if (key === 'pois' || key === 'isLoading') {
+    if (key === 'pois' || key === 'isLoading' || key === 'loadError') {
       renderSidebar();
     }
+  });
+
+  // "Tekrar Dene" button in the sidebar's error state.
+  window.addEventListener('altay:retry-load', () => {
+    loadPoisForLocation(state.userLocation.lat, state.userLocation.lng);
   });
 }
 
@@ -297,11 +302,17 @@ async function loadPoisForLocation(lat, lng) {
       category: state.category
     });
 
+    state.set('loadError', '');
     state.set('pois', pois);
     renderPoiMarkers(pois);
     showToast(`${pois.length} adet tarihi yer bulundu.`, 'success');
   } catch (err) {
     if (err.name !== 'AbortError') {
+      // Don't leave the previous location's list (or an empty "nothing found" list) on screen:
+      // say plainly that loading failed and offer a retry.
+      state.set('loadError', 'Tarihi yer verilerine şu an ulaşılamıyor. İnternet bağlantınızı kontrol edip tekrar deneyin.');
+      state.set('pois', []);
+      renderPoiMarkers([]);
       showToast('Mekan verileri çekilirken bir sorun oluştu.', 'error');
     }
   } finally {

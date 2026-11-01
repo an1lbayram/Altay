@@ -8,7 +8,17 @@ const TRANSPARENT_PNG = Buffer.from(
  * Stubs every third-party call the app makes (Overpass, Nominatim, map tiles) so tests
  * run deterministically without depending on live, rate-limited public APIs.
  */
-export async function mockExternalServices(page, { pois } = {}) {
+export async function mockExternalServices(page, { pois, staticData } = {}) {
+  // Prebuilt Turkey POI data (public/data/poi, see src/js/services/poiStatic.js). Hidden (404)
+  // by default so the app falls back to the mocked Overpass below and existing tests stay
+  // deterministic; pass `staticData` ({ '/data/poi/index.json': {...}, ... }) to exercise it.
+  await page.route(/\/data\/poi\//, (route) => {
+    const body = staticData?.[new URL(route.request().url()).pathname];
+    return body
+      ? route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) })
+      : route.fulfill({ status: 404, body: '' });
+  });
+
   await page.route(/nominatim\.openstreetmap\.org\/reverse/, (route) =>
     route.fulfill({
       status: 200,

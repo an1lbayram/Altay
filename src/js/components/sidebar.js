@@ -47,6 +47,11 @@ export function renderSidebar() {
   }
 
   bindPoiItemEvents();
+
+  const retryBtn = document.getElementById('retry-load-btn');
+  if (retryBtn) {
+    retryBtn.onclick = () => window.dispatchEvent(new CustomEvent('altay:retry-load'));
+  }
 }
 
 function renderTabBody() {
@@ -74,6 +79,21 @@ function renderTabBody() {
         <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
       </div>
     `).join('');
+  }
+
+  if (state.loadError && state.pois.length === 0) {
+    return `
+      <div class="text-center py-12 px-4" role="alert">
+        <div class="w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 flex items-center justify-center mx-auto mb-3 text-2xl">
+          <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+        </div>
+        <h2 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1">Veriler Yüklenemedi</h2>
+        <p class="text-xs text-slate-600 dark:text-slate-400 max-w-xs mx-auto mb-4">${escapeHtml(state.loadError)}</p>
+        <button id="retry-load-btn" class="bg-teal-700 hover:bg-teal-800 text-white text-xs font-semibold py-2 px-4 rounded-xl transition-colors inline-flex items-center gap-1.5">
+          <i class="fa-solid fa-rotate-right" aria-hidden="true"></i> Tekrar Dene
+        </button>
+      </div>
+    `;
   }
 
   if (state.pois.length === 0) {

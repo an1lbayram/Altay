@@ -1,0 +1,68 @@
+name: Update POI data (Türkiye)
+
+# Altay reads Turkish historic sites from public/data/poi (built from OpenStreetMap) instead of
+# the public Overpass servers. This refreshes that data from Geofabrik's daily Türkiye extract
+# once a week and commits it only when something actually changed.
+on:
+  schedule:
+    - cron: "17 3 * * 0" # Sundays 03:17 UTC
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - scripts/build_poi_data.py
+      - .github/workflows/update-poi-data.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-poi-data
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install pyosmium
+        run: pip install osmium==4.3.2
+
+      - name: Download Türkiye extract (Geofabrik) and verify checksum
+        run: |
+          curl -sSfL --retry 3 -o turkey.osm.pbf https://download.geofabrik.de/europe/turkey-latest.osm.pbf
+          curl -sSfL --retry 3 -o turkey.osm.pbf.md5 https://download.geofabrik.de/europe/turkey-latest.osm.pbf.md5
+          echo "$(cut -d' ' -f1 turkey.osm.pbf.md5)  turkey.osm.pbf" | md5sum -c -
+
+      - name: Build public/data/poi
+        run: python scripts/build_poi_data.py turkey.osm.pbf public/data/poi
+
+      - name: Sanity check (refuse to publish a suspiciously small dataset)
+        run: |
+          python - <<'EOF'
+          import json, sys
+          index = json.load(open("public/data/poi/index.json", encoding="utf-8"))
+          core = index["counts"]["core"]
+          print("core:", core, "worship:", index["counts"]["worship"], "cells:", len(index["cells"]))
+          if core < 10000:  # 2026-10: ~16.000
+              sys.exit(f"core count {core} is far below normal; not committing")
+          EOF
+
+      - name: Commit if changed
+        run: |
+          git add -A public/data/poi
+          if git diff --cached --quiet; then
+            echo "Veri değişmemiş, commit yok."
+            exit 0
+          fi
+          stamp=$(python -c "import json;print(json.load(open('public/data/poi/index.json'))['osmTimestamp'])")
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "data(poi): Türkiye tarihi yer verisini güncelle (OSM ${stamp})"
+          git push

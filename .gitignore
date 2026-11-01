@@ -8,3 +8,7 @@ test-results
 playwright-report
 playwright/.cache
 lighthouse-report
+
+# OpenStreetMap extracts used by scripts/build_poi_data.py
+*.osm.pbf
+*.osm.pbf.md5
