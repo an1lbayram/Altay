@@ -4,7 +4,7 @@
 
 ![Altay](public/favicon.svg)
 
-> [an1lbayram](https://an1lbayram-github-io.vercel.app/) tarafından geliştirilmiştir.
+> [an1lbayram](https://an1lbayram.vercel.app/) tarafından geliştirilmiştir.
 
 ---
 
